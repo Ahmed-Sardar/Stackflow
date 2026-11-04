@@ -14,6 +14,16 @@ The Vite development server proxies `/api` to `http://localhost:4000`. If you se
 
 The backend exits with a clear message if required configuration is missing. The workspace `.env` is ignored by Git.
 
+## Render deployment
+
+The repository includes a `render.yaml` Blueprint for one Render web service. The service builds the React frontend and serves it from Express alongside `/api`, keeping cookie authentication on the same origin. It uses Render's free web service plan in Singapore.
+
+1. Create a MongoDB Atlas deployment and obtain an application connection string for a database such as `stockflow`. A local `mongodb://localhost` URI will not work from Render. Allow the Render service's outbound IP addresses in Atlas Network Access, as described in Render's MongoDB Atlas guide.
+2. In Render, create a Blueprint from this GitHub repository. When prompted for `MONGODB_URI`, enter the Atlas URI in Render's environment settings; do not commit it. Render generates `JWT_SECRET` automatically.
+3. Deploy and open the service's `onrender.com` URL. The frontend and backend share that URL. Check `/api/health` for a healthy API, then sign up or log in. Existing local MongoDB users and products are not automatically moved to Atlas.
+
+The build command is `npm ci --include=dev && npm run build`; the start command is `npm run server`. Each push to the linked branch triggers a deploy. No separate frontend URL, proxy, or CORS configuration is needed in production.
+
 ## API
 
 All responses use `{ "data": ... }` on success and `{ "error": "..." }` on failure. Authentication is stored in an HTTP-only, SameSite cookie.

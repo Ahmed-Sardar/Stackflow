@@ -21,8 +21,16 @@ if (!process.env.JWT_SECRET || !process.env.MONGODB_URI) {
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '100kb' }));
+app.get('/api/health', (req, res) => res.json({ data: { status: 'ok' } }));
 app.use('/api', routes);
-app.use((req, res) => res.status(404).json({ error: 'Endpoint not found.' }));
+app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint not found.' }));
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.resolve(__dirname, '../../dist');
+  app.use(express.static(distPath));
+  app.get('*', (req, res) => res.sendFile(path.join(distPath, 'index.html')));
+} else {
+  app.use((req, res) => res.status(404).json({ error: 'Endpoint not found.' }));
+}
 app.use(errorHandler);
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
