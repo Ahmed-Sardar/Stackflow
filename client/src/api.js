@@ -1,7 +1,9 @@
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 export async function api(path, options = {}) {
   let response;
   try {
-    response = await fetch(`/api${path}`, {
+    response = await fetch(`${apiUrl}${path}`, {
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       ...options,

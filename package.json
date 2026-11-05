@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "server": "node server/src/index.js",
+    "dev": "vite",
+    "build": "vite build",
+    "server": "node server/src/index.js",
     "start": "node server/src/index.js",
+    "configure:render": "node scripts/configure-render.cjs",
     "check:deployment": "node scripts/check-deployment.cjs"
-},
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^18.0.9",
