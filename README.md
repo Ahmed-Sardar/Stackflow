@@ -24,6 +24,14 @@ The repository includes a `render.yaml` Blueprint for one Render web service. Th
 
 The build command is `npm ci --include=dev && npm run build`; the start command is `npm run server`. Each push to the linked branch triggers a deploy. No separate frontend URL, proxy, or CORS configuration is needed in production.
 
+## Vercel frontend with Render API
+
+For a separate frontend on Vercel, use the repository root as the Vercel Root Directory (leave the setting blank), rather than `client`. The root contains `package.json`, `index.html`, and `vercel.json`. The build command is `npm run build` and the output directory is `dist`.
+
+The included `vercel.json` forwards `/api/*` to `https://stackflow-je48.onrender.com/api/*` before applying the React Router fallback to `index.html`. Update that destination if the Render service URL changes. The browser continues to use same-origin requests and authentication cookies through Vercel; no client environment variables or CORS changes are needed. Keep `MONGODB_URI`, `JWT_SECRET`, and `NODE_ENV=production` configured on Render only.
+
+Commit and push the configuration, then deploy that commit on Vercel. Verify `/api/health` on the Vercel domain returns JSON with `status: ok`, then test signing in. A `401` JSON response from `/api/auth/me` before signing in is expected; a `404` or an HTML response indicates API routing is still missing. Check that refreshing `/login` loads the app as well.
+
 ## API
 
 All responses use `{ "data": ... }` on success and `{ "error": "..." }` on failure. Authentication is stored in an HTTP-only, SameSite cookie.
