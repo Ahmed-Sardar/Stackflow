@@ -32,6 +32,16 @@ The included `vercel.json` forwards `/api/*` to `https://stackflow-je48.onrender
 
 Commit and push the configuration, then deploy that commit on Vercel. Verify `/api/health` on the Vercel domain returns JSON with `status: ok`, then test signing in. A `401` JSON response from `/api/auth/me` before signing in is expected; a `404` or an HTML response indicates API routing is still missing. Check that refreshing `/login` loads the app as well.
 
+### When Vercel still returns 404
+
+1. In Vercel project settings, confirm the connected Git repository and production branch (`main`). Leave Root Directory blank so Vercel can read the root `vercel.json`. Use the Vite framework preset, build command `npm run build`, and output directory `dist`.
+2. Deploy the latest commit containing `vercel.json`. Redeploying an older deployment uses its older source; select the new commit instead. After changing Root Directory, create a new deployment with the updated settings.
+3. Open the Production domain from the latest Ready deployment. A previously copied deployment-specific URL still points to its original deployment. If external requests redirect to Vercel sign-in, inspect Deployment Protection and use the public domain intended for your app.
+4. Run `npm run check:deployment -- https://YOUR-PRODUCTION-DOMAIN`. It checks API health, the unauthenticated session response, login validation using an empty request (no account is created), and the `/login` page fallback.
+5. Sign up or sign in, refresh the page, and add a product to verify authentication and database writes.
+
+No `VITE_API_URL` or Render URL environment variable is read by this frontend. The Render address is configured in `vercel.json`. Adding an unused variable in Vercel will not change request routing. Do not put backend secrets in frontend environment variables.
+
 ## API
 
 All responses use `{ "data": ... }` on success and `{ "error": "..." }` on failure. Authentication is stored in an HTTP-only, SameSite cookie.

@@ -6,7 +6,8 @@
   "dev": "vite",
   "build": "vite build",
   "server": "node server/src/index.js",
-  "start": "node server/src/index.js"
+    "start": "node server/src/index.js",
+    "check:deployment": "node scripts/check-deployment.cjs"
 },
   "dependencies": {
     "bcryptjs": "^2.4.3",
